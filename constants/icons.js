@@ -15,7 +15,7 @@ export const back_arrow_icon = require("../assets/icons/back_arrow_icon.png");
 export const more_icon = require("../assets/icons/more_icon.png");
 export const home_icon = require("../assets/icons/home.png");
 export const profile_icon = require("../assets/icons/profile.png");
-
+export const logout = require("../assets/icons/logout.png");
 
 export default {
     card_icon,
@@ -34,5 +34,6 @@ export default {
     back_arrow_icon,
     more_icon,
     home_icon,
-    profile_icon
+    profile_icon,
+    logout
 }

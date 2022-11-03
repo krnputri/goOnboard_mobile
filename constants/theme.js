@@ -36,7 +36,7 @@ export const SIZES = {
     largeTitle: 50,
     h1: 30,
     h2: 22,
-    h3: 16,
+    h3: 18,
     h4: 14,
     body1: 30,
     body2: 20,

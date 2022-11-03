@@ -2,25 +2,18 @@ import React from "react";
 import {
     View,
     Text,
-    ImageBackground,
+    useWindowDimensions,
     TouchableOpacity,
     Image,
     ScrollView,
     Animated
 } from 'react-native';
 import { FONTS, COLORS, SIZES, icons } from "../constants";
-
-const LineDivider = () => {
-    return (
-        <View style={{ width: 1, paddingVertical: 5 }}>
-            <View style={{ flex: 1, borderLeftColor: COLORS.lightGray2, borderLeftWidth: 1 }}></View>
-        </View>
-    )
-}
+import RenderHtml from 'react-native-render-html';
 
 const CourseDetail = ({ route, navigation }) => {
 
-    const [book, setBook] = React.useState(null);
+    const [itemCourse, setCourse] = React.useState(null);
 
     const [scrollViewWholeHeight, setScrollViewWholeHeight] = React.useState(1);
     const [scrollViewVisibleHeight, setScrollViewVisibleHeight] = React.useState(0);
@@ -28,26 +21,12 @@ const CourseDetail = ({ route, navigation }) => {
     const indicator = new Animated.Value(0);
 
     React.useEffect(() => {
-        let { book } = route.params;
-        setBook(book)
-    }, [book])
-
-    function renderBookInfoSection() {
+        let { itemCourse } = route.params;
+        setCourse(itemCourse)
+    }, [itemCourse])
+    function renderHeader() {
         return (
             <View style={{ flex: 1 }}>
-                <ImageBackground
-                    source={book.bookCover}
-                    resizeMode="cover"
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        bottom: 0,
-                        left: 0
-                    }}
-                />
-
-                {/* Color Overlay */}
                 <View
                     style={{
                         position: 'absolute',
@@ -55,7 +34,7 @@ const CourseDetail = ({ route, navigation }) => {
                         right: 0,
                         bottom: 0,
                         left: 0,
-                        backgroundColor: book.backgroundColor
+                        backgroundColor: COLORS.primary
                     }}
                 >
                 </View>
@@ -72,27 +51,16 @@ const CourseDetail = ({ route, navigation }) => {
                             style={{
                                 width: 25,
                                 height: 25,
-                                tintColor: book.navTintColor
+                                tintColor: "#000"
                             }}
                         />
                     </TouchableOpacity>
-
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ ...FONTS.h2, color: book.navTintColor }}>{book.bookName}</Text>
-                    </View>
-
-                    
-                </View>
-
-                {/* Book Name and Author */}
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ ...FONTS.body3, color: book.navTintColor }}>{book.author}</Text>
                 </View>
             </View>
         )
     }
-
-    function renderBookDescription() {
+    
+    function renderContent() {
 
         const indicatorSize = scrollViewWholeHeight > scrollViewVisibleHeight ? scrollViewVisibleHeight * scrollViewVisibleHeight / scrollViewWholeHeight : scrollViewVisibleHeight
 
@@ -134,14 +102,19 @@ const CourseDetail = ({ route, navigation }) => {
                         { useNativeDriver: false }
                     )}
                 >
-                    <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>Description</Text>
-                    <Text style={{ ...FONTS.body2, color: COLORS.lightGray }}>{book.description}</Text>
+                    <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>{itemCourse.title}</Text>
+                    {/* <RenderHtml
+                        contentWidth={useWindowDimensions()}
+                        source={sourceHTML}
+                        style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}
+                    /> */}
+                    <Text style={{ ...FONTS.body2, color: COLORS.lightGray }}>{itemCourse.content}</Text>
                 </ScrollView>
             </View>
         )
     }
 
-    function renderLinkButton() {
+    function renderButton() {
         return (
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 {/* Start Reading */}
@@ -162,22 +135,23 @@ const CourseDetail = ({ route, navigation }) => {
         )
     }
 
-    if (book) {
+    if (itemCourse) {
         return (
             <View style={{ flex: 1, backgroundColor: COLORS.black }}>
                 {/* Header */}
+                
                 <View style={{ flex: 1 }}>
-                    {renderBookInfoSection()}
+                    {renderHeader()}
                 </View>
 
                 {/* Description */}
-                <View style={{ flex: 5 }}>
-                    {renderBookDescription()}
+                <View style={{ flex: 8 }}>
+                    {renderContent()}
                 </View>
 
                 {/* Buttons */}
                 <View style={{ height: 50, marginBottom: 30 }}>
-                    {renderLinkButton()}
+                    {renderButton()}
                 </View>
             </View>
         )

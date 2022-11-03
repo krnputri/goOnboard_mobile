@@ -159,7 +159,7 @@ const Home = ({ navigation }) => {
     const [listNews, setNews] = React.useState(list_news);
     const [listTest, setTest] = useState([]);
     const [listCourse, setCourse] = React.useState(listCourse);
-    const [profile, setProfile] = React.useState(profileData);
+    const [profile, setProfile] = React.useState(profile);
     const [myBooks, setMyBooks] = React.useState(myBooksData);
     const [categories, setCategories] = React.useState(categoriesData);
     const [selectedCategory, setSelectedCategory] = React.useState(1);
@@ -168,6 +168,7 @@ const Home = ({ navigation }) => {
         const link = await AsyncStorage.getItem('linkApi')
         const token = await AsyncStorage.getItem('token')
         const id = await AsyncStorage.getItem('userId')
+        setProfile(await AsyncStorage.getItem('name'))
         console.log("msg : "+ link+'/api/courses/?userId='+ id)
         try{
             const resp = await fetch(link+'/api/courses/?userId='+ id, {
@@ -195,12 +196,12 @@ const Home = ({ navigation }) => {
                 <View style={{ flex: 1 }}>
                     <View style={{ marginRight: SIZES.padding }}>
                         <Text style={{ ...FONTS.h3, color: COLORS.white }}>Hallo,</Text>
-                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>{listCourse}</Text>
+                        <Text style={{ ...FONTS.h2, color: COLORS.white }}>{profile}</Text>
                     </View>
                 </View>
 
                 {/* Points */}
-                {/* <TouchableOpacity
+                <TouchableOpacity
                     style={{
                         backgroundColor: COLORS.primary,
                         height: 40,
@@ -213,7 +214,7 @@ const Home = ({ navigation }) => {
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 25, backgroundColor: 'rgba(0,0,0,0.5)' }}>
                             <Image
-                                source={icons.plus_icon}
+                                source={icons.logout}
                                 resizeMode="contain"
                                 style={{
                                     width: 20,
@@ -222,9 +223,9 @@ const Home = ({ navigation }) => {
                             />
                         </View>
 
-                        <Text style={{ marginLeft: SIZES.base, color: COLORS.white, ...FONTS.body3 }}>point</Text>
+                        <Text style={{ marginLeft: SIZES.base, color: COLORS.black, ...FONTS.body3 }}>SignOut</Text>
                     </View>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
             </View>
         )
     }
@@ -310,21 +311,13 @@ const Home = ({ navigation }) => {
     }
 
     function renderCategoryData() {
-        var books = []
-
-        let selectedCategoryBooks = categories.filter(a => a.id == selectedCategory)
-
-        if (selectedCategoryBooks.length > 0) {
-            books = selectedCategoryBooks[0].books
-        }
-
         const renderItem = ({ item }) => {
             return (
                 <View style={{ marginVertical: SIZES.base }}>
                     <TouchableOpacity
                         style={{ flex: 1, flexDirection: 'row' }}
                         onPress={() => navigation.navigate("CourseDetail", {
-                            book: item
+                            itemCourse: item
                         })}
                     >
                         <View style={{ width: 70, height: 70, borderRadius: 10, backgroundColor: COLORS.white }}/>
@@ -332,7 +325,7 @@ const Home = ({ navigation }) => {
                         <View style={{ flex: 1, marginLeft: SIZES.radius }}>
                             {/* Book name and author */}
                             <View>
-                                <Text style={{ paddingRight: SIZES.padding, ...FONTS.h2, color: COLORS.white }}>{item.bookName}</Text>
+                                <Text style={{ paddingRight: SIZES.padding, ...FONTS.h3, color: COLORS.white }}>{item.title}</Text>
                                 <Text style={{ ...FONTS.h3, color: COLORS.lightGray }}>{item.author}</Text>
                             </View>
 
@@ -366,7 +359,7 @@ const Home = ({ navigation }) => {
         return (
             <View style={{ flex: 1, marginTop: SIZES.radius, paddingLeft: SIZES.padding }}>
                 <FlatList
-                    data={books}
+                    data={listTest}
                     renderItem={renderItem}
                     keyExtractor={item => `${item.id}`}
                     showsVerticalScrollIndicator={false}

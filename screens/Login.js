@@ -46,6 +46,7 @@ const Login =  ({ route, navigation }) => {
                 const data =  await resp.json();
                 AsyncStorage.setItem('token', data.token);
                 AsyncStorage.setItem('userId', JSON.stringify(data.userId));
+                AsyncStorage.setItem('name', data.name);
                 const link2 = await AsyncStorage.getItem('linkApi')
                 navigation.navigate("Home", {})
                 console.log("login : ok ")
@@ -55,10 +56,11 @@ const Login =  ({ route, navigation }) => {
         }
         
     };
-
+    
     function loginView() {
         return (
             <View style={{alignItems:'center', alignContent:'center'}}>
+                
                 <Image
                     source={images.logo}
                     style={{
@@ -107,10 +109,19 @@ const Login =  ({ route, navigation }) => {
             </View>
         )
     }
-
+    const sourceHTML = {
+        html: `
+      <p style='text-align:center;'>
+        Hello World!
+      </p>`
+      };
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.black }}>
             <View style={{ height: 200, marginHorizontal: 40, marginTop: 150 }}>
+            <RenderHtml
+                    contentWidth={useWindowDimensions()}
+                    source={sourceHTML}
+                />
                 {loginView()}
                 {/* <WebView
                     originWhitelist={['*']}
