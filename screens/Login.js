@@ -23,13 +23,16 @@ const Login =  ({ route, navigation }) => {
     const getLogin = async () => {
         const emailError = emailValidator(email.value)
         const passwordError = passwordValidator(password.value)
+        const link = 'https://f745-2404-8000-1001-d0a0-c820-2294-fc3d-d6f.ap.ngrok.io'
+        AsyncStorage.setItem('linkApi', link);
+
         if (emailError || passwordError) {
           setEmail({ ...email, error: emailError })
           setPassword({ ...password, error: passwordError })
           return
         } else {
             try{
-                const resp = await fetch('https://fb97-2404-8000-1001-d0a0-8970-a97f-8edd-827d.ap.ngrok.io/api/users/login', {
+                const resp = await fetch(link+'/api/users/login', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -41,11 +44,14 @@ const Login =  ({ route, navigation }) => {
                       })
                     });
                 const data =  await resp.json();
-                console.log("msg "+ data.token)
+                AsyncStorage.setItem('token', data.token);
+                AsyncStorage.setItem('userId', JSON.stringify(data.userId));
+                const link2 = await AsyncStorage.getItem('linkApi')
                 navigation.navigate("Home", {})
+                console.log("login : ok ")
             } catch (error) {
                 console.log("error : " +error);
-              }
+            }
         }
         
     };

@@ -8,7 +8,7 @@ import {
     ScrollView,
     FlatList
 } from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, FONTS, SIZES, icons, images } from '../constants';
 
 const LineDivider = () => {
@@ -157,6 +157,7 @@ const Home = ({ navigation }) => {
     ]
 
     const [listNews, setNews] = React.useState(list_news);
+    const [listTest, setTest] = useState([]);
     const [listCourse, setCourse] = React.useState(listCourse);
     const [profile, setProfile] = React.useState(profileData);
     const [myBooks, setMyBooks] = React.useState(myBooksData);
@@ -164,9 +165,23 @@ const Home = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = React.useState(1);
 
     const getData = async () => {
-        const resp = await fetch("https://api.agify.io?name=kirana");
-        const data = await resp.json();
-        setCourse(data.name);
+        const link = await AsyncStorage.getItem('linkApi')
+        const token = await AsyncStorage.getItem('token')
+        const id = await AsyncStorage.getItem('userId')
+        console.log("msg : "+ link+'/api/courses/?userId='+ id)
+        try{
+            const resp = await fetch(link+'/api/courses/?userId='+ id, {
+                method: 'GET',
+                headers: {
+                    Authorization : 'Bearer '+ token
+                }
+                });
+            const data =  await resp.json();
+            console.log("bisaaaaa : "+ data)
+            setTest(data)
+        } catch (error) {
+            console.log("error : " +error);
+        }
       };
 
       useEffect(() => {
@@ -312,12 +327,7 @@ const Home = ({ navigation }) => {
                             book: item
                         })}
                     >
-                        {/* Book Cover */}
-                        <Image
-                            source={item.bookCover}
-                            resizeMode="cover"
-                            style={{ width: 100, height: 100, borderRadius: 10 }}
-                        />
+                        <View style={{ width: 70, height: 70, borderRadius: 10, backgroundColor: COLORS.white }}/>
 
                         <View style={{ flex: 1, marginLeft: SIZES.radius }}>
                             {/* Book name and author */}
@@ -327,7 +337,7 @@ const Home = ({ navigation }) => {
                             </View>
 
                             {/* Genre */}
-                            <View style={{ flexDirection: 'row', marginTop: SIZES.base }}>
+                            {/* <View style={{ flexDirection: 'row', marginTop: SIZES.base }}>
                                 {
                                     item.genre.includes("Adventure") &&
                                     <View style={{ justifyContent: 'center', alignItems: 'center', padding: SIZES.base, marginRight: SIZES.base, backgroundColor: COLORS.darkGreen, height: 40, borderRadius: SIZES.radius }}>
@@ -346,7 +356,7 @@ const Home = ({ navigation }) => {
                                         <Text style={{ ...FONTS.body3, color: COLORS.lightBlue }}>Drama</Text>
                                     </View>
                                 }
-                            </View>
+                            </View> */}
                         </View>
                     </TouchableOpacity>
                 </View>
