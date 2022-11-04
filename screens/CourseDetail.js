@@ -2,28 +2,56 @@ import React from "react";
 import {
     View,
     Text,
-    useWindowDimensions,
     TouchableOpacity,
     Image,
     ScrollView,
     Animated
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FONTS, COLORS, SIZES, icons } from "../constants";
-import RenderHtml from 'react-native-render-html';
 
 const CourseDetail = ({ route, navigation }) => {
 
     const [itemCourse, setCourse] = React.useState(null);
-
+    const [button, setButton] = React.useState(false);
     const [scrollViewWholeHeight, setScrollViewWholeHeight] = React.useState(1);
     const [scrollViewVisibleHeight, setScrollViewVisibleHeight] = React.useState(0);
-
     const indicator = new Animated.Value(0);
 
     React.useEffect(() => {
         let { itemCourse } = route.params;
         setCourse(itemCourse)
     }, [itemCourse])
+    
+    const getComplete = async () => {
+        const link = await AsyncStorage.getItem('linkApi')
+        const token = await AsyncStorage.getItem('token')
+        const id = await AsyncStorage.getItem('userId')
+        try{
+            const resp = await fetch(link+'/api/user-courses/', {
+                method: 'POST',
+                headers: {
+                    Authorization : 'Bearer '+ token,
+                    Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: id,
+                    courseId: itemCourse.id
+                  })
+                });
+            const data =  await resp.json();
+            console.log("DATAA : "+ data.status)
+            if (data.status = 1) {
+                navigation.navigate("Home", {})
+                setButton(false)
+                console.log('Course Done')
+            }
+        } catch (error) {
+            console.log("error : " +error);
+        }
+      };
+
     function renderHeader() {
         return (
             <View style={{ flex: 1 }}>
@@ -102,23 +130,21 @@ const CourseDetail = ({ route, navigation }) => {
                         { useNativeDriver: false }
                     )}
                 >
+                    {/* Title Content */}
                     <Text style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}>{itemCourse.title}</Text>
-                    {/* <RenderHtml
-                        contentWidth={useWindowDimensions()}
-                        source={sourceHTML}
-                        style={{ ...FONTS.h2, color: COLORS.white, marginBottom: SIZES.padding }}
-                    /> */}
+                    {/* Content */}
                     <Text style={{ ...FONTS.body2, color: COLORS.lightGray }}>{itemCourse.content}</Text>
                 </ScrollView>
             </View>
         )
     }
 
-    function renderButton() {
+    function renderButtonEnable() {
         return (
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 {/* Start Reading */}
                 <TouchableOpacity
+                    disabled={false}
                     style={{
                         flex: 1,
                         backgroundColor: COLORS.primary,
@@ -127,19 +153,46 @@ const CourseDetail = ({ route, navigation }) => {
                         alignItems: 'center',
                         justifyContent: 'center'
                     }}
-                    onPress={() => console.log("Start Reading")}
+                    onPress={ getComplete }
                 >
-                    <Text style={{ ...FONTS.h3, color: COLORS.white }}>View Link</Text>
+                    <Text style={{ ...FONTS.h3, color: COLORS.white }}>Finish</Text>
                 </TouchableOpacity>
             </View>
         )
+    }
+    function renderButtonDisable() {
+        return (
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+                {/* Start Reading */}
+                <TouchableOpacity
+                    disabled={true}
+                    style={{
+                        flex: 1,
+                        backgroundColor: COLORS.lightGray,
+                        marginHorizontal: 25,
+                        borderRadius: SIZES.radius,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <Text style={{ ...FONTS.h3, color: COLORS.white }}>Done</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    function renderButton(){
+        if (itemCourse.userId) {
+            return renderButtonDisable()
+        } else {
+            return renderButtonEnable()
+        }
     }
 
     if (itemCourse) {
         return (
             <View style={{ flex: 1, backgroundColor: COLORS.black }}>
                 {/* Header */}
-                
                 <View style={{ flex: 1 }}>
                     {renderHeader()}
                 </View>

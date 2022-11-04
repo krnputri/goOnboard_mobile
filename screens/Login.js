@@ -23,7 +23,7 @@ const Login =  ({ route, navigation }) => {
     const getLogin = async () => {
         const emailError = emailValidator(email.value)
         const passwordError = passwordValidator(password.value)
-        const link = 'https://06b7-223-255-229-78.ap.ngrok.io'
+        const link = 'https://49ff-2404-8000-1001-d0a0-b8f9-9390-c2df-917d.ap.ngrok.io'
         AsyncStorage.setItem('linkApi', link);
 
         if (emailError || passwordError) {
