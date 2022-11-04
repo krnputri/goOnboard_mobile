@@ -23,7 +23,7 @@ const Login =  ({ route, navigation }) => {
     const getLogin = async () => {
         const emailError = emailValidator(email.value)
         const passwordError = passwordValidator(password.value)
-        const link = 'https://f745-2404-8000-1001-d0a0-c820-2294-fc3d-d6f.ap.ngrok.io'
+        const link = 'https://06b7-223-255-229-78.ap.ngrok.io'
         AsyncStorage.setItem('linkApi', link);
 
         if (emailError || passwordError) {
@@ -109,19 +109,10 @@ const Login =  ({ route, navigation }) => {
             </View>
         )
     }
-    const sourceHTML = {
-        html: `
-      <p style='text-align:center;'>
-        Hello World!
-      </p>`
-      };
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.black }}>
             <View style={{ height: 200, marginHorizontal: 40, marginTop: 150 }}>
-            <RenderHtml
-                    contentWidth={useWindowDimensions()}
-                    source={sourceHTML}
-                />
                 {loginView()}
                 {/* <WebView
                     originWhitelist={['*']}

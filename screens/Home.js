@@ -189,6 +189,11 @@ const Home = ({ navigation }) => {
         getData();
       }, []);
 
+      const getLogout = async () => {
+        await AsyncStorage.removeItem('token')
+        navigation.navigate("Home", {})
+      };
+
     function renderHeader(listCourse) {
         return (
             <View style={{ flex: 1, flexDirection: 'row', paddingHorizontal: SIZES.padding, alignItems: 'center' }}>
@@ -209,7 +214,8 @@ const Home = ({ navigation }) => {
                         paddingRight: SIZES.radius,
                         borderRadius: 20
                     }}
-                    onPress={() => { console.log("Point") }}
+                    
+                    onPress={() => { getLogout }}
                 >
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 25, backgroundColor: 'rgba(0,0,0,0.5)' }}>
